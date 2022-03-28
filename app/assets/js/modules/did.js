@@ -47,7 +47,7 @@ let DID = {
     if (entry.did) {
       return entry;
     }
-    entry.did = (await this.create(options.method)).id;
+    entry.did = (await this.create(options)).id;
     await Storage.set('connections', entry);
     return entry;
   },

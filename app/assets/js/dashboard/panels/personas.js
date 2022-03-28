@@ -71,22 +71,33 @@ persona_create_modal.addEventListener('modalclosed', e => {
 DOM.delegateEvent('pointerup', '[persona-id]', (e, node) => {
   let did = node.getAttribute('persona-id');
   if (!did) return;
-  did_viewer.setAttribute('did', did);
-  did_viewer.setAttribute('persona', node.getAttribute('persona-name'));
-  did_viewer.open();
+  did_viewer_overlay.setAttribute('did', did);
+  did_viewer_overlay.setAttribute('persona', node.getAttribute('persona-name'));
+  did_viewer_overlay.open();
 });
 
-did_viewer.addEventListener('modalopen', function(e) {
+
+DOM.delegateEvent('vieweropen', 'did-viewer', (e, node) => {
+  console.log('did viewer opened')
+  e && e.stopPropagation()
+})
+
+did_viewer_overlay.addEventListener('modalopen', function(e) {
   let did = this.getAttribute('did');
-  //if (!did) this.close();
+  let persona = this.getAttribute('persona');
+  if (!did && !persona) this.close();
+
+  console.log('overlay modalopen')
+
   this.innerHTML = `
     <article>
       <header>
-        <h3>${this.getAttribute('persona') || did}</h3><span modal-close=""></span>
+        <h3>${persona || did}</h3><span modal-close=""></span>
       </header>
 
       <section>
-        <did-viewer did="${did}"></did-viewer>
+        <p>did viewer here</p>
+        <did-viewer id="did_viewer" did=""></did-viewer>
       </section>
 
       <footer>
@@ -94,6 +105,30 @@ did_viewer.addEventListener('modalopen', function(e) {
       </footer>
     </article>
   `;
+
+  did_viewer.open({ did, persona })
+});
+
+did_viewer_overlay.addEventListener('modalclose', function(e) {
+  let did = this.setAttribute('did', '');
+  //if (!did) this.close();
+
+  this.innerHTML = `
+    <article>
+      <header>
+        <h3></h3><span modal-close=""></span>
+      </header>
+
+      <section>
+      </section>
+
+      <footer>
+        <button type="button" modal-close="">Cancel</button>
+      </footer>
+    </article>
+  `;
+
+
 });
 
 export async function initialize(){

@@ -5,6 +5,7 @@ import { Storage } from './storage.js';
 import { Natives } from './natives.js';
 import {SemanticRenderer} from './semantic-renderer.js';
 
+
 const SHA256 =  new Hashes.SHA256;
 const colonSlashReplaceRegex = /:*\/+/g;
 let sheets = {};

@@ -1,12 +1,22 @@
 
 import '/assets/js/modules/dom.js';
+import '/assets/js/modules/did.js';
+
 
 var DIDViewer = globalThis.DIDViewer = class DIDViewer extends HTMLElement {
   static get observedAttributes() {
-    return ['open'];
+    return ['did', 'open'];
   }
-  constructor() {
+  constructor(options = {}) {
     super();
+    this.options = options
+    console.log('constructed a did-viewer', options)
+
+    const selListener = this.addEventListener('tabselected', (e) => {
+      console.log('tabselected: ', e)
+    })
+
+    this.addEventListener('beforeunload', selListener)
 
     this.innerHTML = `
       <tab-panels>
@@ -22,14 +32,29 @@ var DIDViewer = globalThis.DIDViewer = class DIDViewer extends HTMLElement {
     `
   }
   load (){
-    
+    console.log('im a did viewer: ', this)
+  }
+  open (options = {}){
+    this.setAttribute('open', '')
+    for (let [attrib, val] of Object.entries(options)) {
+      this.setAttribute(attrib, val)
+    }
+  }
+  render (options = {}) {
+    console.log('party time')
   }
   attributeChangedCallback(attr, last, current) {
     switch(attr) {
       case 'open':
         DOM.ready.then(e => {
-          DOM.fireEvent(this, current !== null ? 'modalopen' : 'modalclose')
+          console.log('im an open did viewer: ', this)
+          DOM.fireEvent(this, current !== null ? 'vieweropen' : 'viewerclose')
         })
+        break
+
+      case 'did':
+        console.log('new did:', attr, last, current)
+        break
     }
   }
 };

@@ -16,12 +16,13 @@
       import { UUID } from '/assets/js/modules/uuid.js';
       
       navigator.did.protocolHandler = async function (channel, topic, message, origin) {
-        
+        console.log("handling: ", channel, topic, message, origin)
         return new Promise(async (resolve, reject) => {
           if (channel.protocol === 'did:') {
             switch(topic) {
               case 'requestDID': 
                 var peer = await DID.getConnection(origin);
+                console.log("requestDID: ", peer)
                 console.log(peer);
                 if (false) {
                   var nonce = UUID.v4();
